@@ -64,6 +64,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     region = entry.data[CONF_REGION]
 
     websession = aiohttp_client.async_get_clientsession(hass)
+    websession.connector._force_close = True # disable http keepalive
     mazda_client = MazdaAPI(
         email, password, region, websession=websession, use_cached_vehicle_list=True
     )
