@@ -14,7 +14,7 @@ SDK_VERSION = "2.2.3"
 
 class SensorDataBuilder:  # noqa: D101
     def __init__(self):  # noqa: D107
-        self.sensor_collection_start_timestamp = datetime.datetime.now(datetime.UTC)
+        self.sensor_collection_start_timestamp = datetime.datetime.utcnow()
         self.device_info_time = random.randrange(3, 8) * 1000
 
         self.system_info = SystemInfo()
@@ -132,7 +132,7 @@ class SensorDataBuilder:  # noqa: D101
             + motion_data_b
         )
 
-        now_timestamp = datetime.datetime.now(datetime.UTC)
+        now_timestamp = datetime.datetime.utcnow()
         time_since_sensor_collection_start = int(
             (now_timestamp - self.sensor_collection_start_timestamp)
             / datetime.timedelta(milliseconds=1)

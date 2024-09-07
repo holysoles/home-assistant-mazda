@@ -22,7 +22,7 @@ class TouchEventList:  # noqa: D101
     def randomize(self, sensor_collection_start_timestamp):  # noqa: D102
         self.touch_events = []
 
-        now_timestamp = datetime.datetime.now(datetime.UTC)
+        now_timestamp = datetime.datetime.utcnow()
         time_since_sensor_collection_start = int(
             (now_timestamp - sensor_collection_start_timestamp)
             / datetime.timedelta(milliseconds=1)
