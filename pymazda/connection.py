@@ -6,6 +6,7 @@ import logging
 import ssl
 import time
 from urllib.parse import urlencode
+from ssl_context_configurator import SSLContextConfigurator
 
 import aiohttp
 
@@ -28,11 +29,26 @@ from .exceptions import (
 )
 from .sensordata.sensor_data_builder import SensorDataBuilder
 
-ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS)
 ssl_context.load_default_certs()
+#ssl_context.set_ciphers(
+#    "DEFAULT:!aNULL:!eNULL:!MD5:!3DES:!DES:!RC4:!IDEA:!SEED:!aDSS:!SRP:!PSK"
+#)
+# TLS 1.3 ciphers are controlled through openssl conf file
 ssl_context.set_ciphers(
-    "DEFAULT:!aNULL:!eNULL:!MD5:!3DES:!DES:!RC4:!IDEA:!SEED:!aDSS:!SRP:!PSK"
+    "TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:"
+    "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-CHACHA20-POLY1305:RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-CBC-SHA:ECDHE-RSA-AES128-CBC-SHA:ECDHE-ECDSA-AES256-CBC-SHA:ECDHE-RSA-AES256-CBC-SHA:RSA-AES256-GCM-SHA384:RSA-AES128-CBC-SHA:RSA-AES256-CBC-SHA"
 )
+SIG_ALG = "ecdsa_secp256r1_sha256:rsa_pss_rsae_sha256"
+
+ciph_str = ""
+for cipher in ssl_context.get_ciphers():
+    ciph_str += cipher['name'] + '\n'
+print(ciph_str)
+print(f"cipher count: {len(ssl_context.get_ciphers())}")
+
+with SSLContextConfigurator(ssl_context, libssl_path='libssl.so') as ssl_context_configurator:
+    ssl_context_configurator.configure_signature_algorithms(SIG_ALG)
 
 REGION_CONFIG = {
     "MNAO": {

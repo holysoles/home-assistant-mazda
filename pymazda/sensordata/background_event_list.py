@@ -23,7 +23,7 @@ class BackgroundEventList:  # noqa: D101
         if random.randrange(0, 10) > 0:
             return
 
-        now_timestamp = datetime.datetime.now(datetime.UTC)
+        now_timestamp = datetime.datetime.utcnow()
         time_since_sensor_collection_start = int(
             (now_timestamp - sensor_collection_start_timestamp)
             / datetime.timedelta(milliseconds=1)
